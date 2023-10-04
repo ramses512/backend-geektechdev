@@ -1,12 +1,22 @@
 module.exports = ({ env }) => ({
-  "vercel-deploy": {
-    enabled: true,
+  upload: {
     config: {
-      deployHook: process.env.VERCEL_DEPLOY_PLUGIN_HOOK,
-      apiToken: process.env.VERCEL_DEPLOY_PLUGIN_API_TOKEN,
-      appFilter: process.env.VERCEL_DEPLOY_PLUGIN_APP_FILTER,
-      teamFilter: process.env.VERCEL_DEPLOY_PLUGIN_TEAM_FILTER,
-      roles: ["strapi-super-admin"],
+      provider: "aws-s3",
+      providerOptions: {
+        accessKeyId: env("AWS_ACCESS_KEY_ID"),
+        secretAccessKey: env("AWS_ACCESS_SECRET"),
+        region: env("AWS_REGION"),
+        params: {
+          ACL: env("AWS_ACL", "public-read"),
+          signedUrlExpires: env("AWS_SIGNED_URL_EXPIRES", 15 * 60),
+          Bucket: env("AWS_BUCKET"),
+        },
+      },
+      actionOptions: {
+        upload: {},
+        uploadStream: {},
+        delete: {},
+      },
     },
   },
 });
